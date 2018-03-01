@@ -1,3 +1,15 @@
+// Exemple of how a json document would look like.
+//  {
+//     "endpoint" : {
+//     	"method": "method",
+//         "handler": "address of handler" ex: handler/handler
+//     },
+//      "endpoint" : {
+//     	"method": "method",
+//         "handler": "address of handler" ex: handler/handler 
+//     }
+// }
+
 const fs = require('fs'),
     IoC = require('electrolyte'),
     bodyParser = require('body-parser');
