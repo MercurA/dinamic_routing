@@ -3,12 +3,8 @@
 //     "endpoint" : {
 //     	"method": "method",
 //         "handler": "address of handler" ex: handler/handler
-//     },
-//      "endpoint" : {
-//     	"method": "method",
-//         "handler": "address of handler" ex: handler/handler 
+//         "handlerMethod": "handlers method" ex: insert
 //     }
-// }
 
 const fs = require('fs'),
     IoC = require('electrolyte'),
