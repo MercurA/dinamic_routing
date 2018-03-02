@@ -21,29 +21,12 @@ let jsonDoc = fs.readFileSync('./routes.json'),
             this.app = app;
             this.cors = cors;
             this.route;
-            this.method;
-            this.endPoint;
-            this.handler;
             this.setMddleware();
         }
     getObj(){
         for( let route in documentJson ){
-            this.route = route;
-            this.method = documentJson[route].method.toLowerCase();
-            this.handler = documentJson[route].handler;
-            this.add(this.route,this.method,this.handler);
-        }
-    }
-    add(route,method,handler){
-        switch(route){
-            case '/api':
-                this.app[method](route,IoC.create(handler).list)
-                break;
-            case '/api/post':
-                this.app[method](route,IoC.create(handler).insert);
-                break;
-            default:
-                console.log('No routes');
+            let r = documentJson[route];
+            this.app[ r.method.toLowerCase() ](  route , IoC.create( r.handler )[ r.handlerMethod ] );
         }
     }
     setMddleware(){
