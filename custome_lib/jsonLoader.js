@@ -51,21 +51,9 @@ class JsonRouting {
                 next();
         });
     }
-<<<<<<< HEAD
     start(){
         this.getObj();
         
-=======
-    isNumeric( required,data, req, res, next ){
-        if(required && (params != null)){
-            let p = req.params[data];
-            if (Number.isFinite(p) && Number.isInteger(p) && !Number.isNaN(p)) {
-                return next();
-            }
-            res.status(500).send({ success: false, msg: "Invalid parameter" });
-        }
-        return;
->>>>>>> 96e89aec452eb23d269f2afa36912becd2c49000
     }
 start(){
     this.getObj();
