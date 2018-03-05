@@ -8,16 +8,17 @@
 
 const fs = require('fs'),
     IoC = require('electrolyte'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    validation = require('./validation');
 
 let jsonDoc = fs.readFileSync('./routes.json'),
     documentJson = JSON.parse(jsonDoc);
-    class JsonRouting{
+    class JsonRouting {
         constructor( app, cors){
             this.app = app;
             this.cors = cors;
-            this.route;
             this.setMddleware();
+            this.validation = new validation.Validation();
         }
     getObj(){
         for( let route in documentJson ){
@@ -47,6 +48,7 @@ let jsonDoc = fs.readFileSync('./routes.json'),
     }
     start(){
         this.getObj();
+        
     }
 }
 exports.JsonRouting = JsonRouting;

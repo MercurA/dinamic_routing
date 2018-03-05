@@ -1,0 +1,27 @@
+{
+    "/api":{
+        "method": "GET",
+        "handler": "handler/handler",
+        "handlerMethod": "findAll",
+        "validate": {
+            "params": false
+        }
+    },
+    "/insert":{
+        "method": "POST",
+        "handler": "handler/handler",
+        "handlerMethod":"insert",
+        "validate": {
+            "params": false
+        }
+    },
+    "/api/:age":{
+        "method": "GET",
+        "handler": "handler/handler",
+        "handlerMethod":"findByAge",
+        "validate": {
+            "params": true,
+            "by":"age"
+        }
+    }
+}
