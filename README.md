@@ -9,10 +9,9 @@ An attempt to create dynamic routing for an api that uses express and electrolyt
 ## Usage
 Inside your main file.js 
 ```
-const express 	= require('express'),
-	routing		= require('./customlib/jsonLoader);
+const express 	= require('express');
  
- exports = module.exports = () => {
+ exports = module.exports = (routing) => {
  	let app = express(),
         PORT = process.env.PORT || 3000;
 		
@@ -20,6 +19,10 @@ const express 	= require('express'),
 	
 	...
  }
+ 
+exports['@singleton'] = true;
+exports['@async] = false;
+exports['@require'] = ['lib_folder/jsonRouting'];
 ```
 
 ### Work in Progress...
