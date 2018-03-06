@@ -1,8 +1,12 @@
 exports.checkParams = ( req, res, next ) => {
-    let p = req.params.age;
-
-    if(p !== undefined ){
-        if(isNumber(p * 1)){
+    function getParam(){
+        for(let i of Object.keys(req.params)){
+            return i;
+        }
+    }
+    let p = getParam();
+    if(req.params[p] !== undefined ){
+        if(isNumber(req.params[p] * 1)){
             next();
         } else {
             res.send({ success: false, msg: 'Invalid parameters found.' });
