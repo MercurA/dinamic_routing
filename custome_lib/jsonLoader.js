@@ -1,26 +1,25 @@
-const fs = require('fs'),
-    IoC = require('electrolyte'),
-    bodyParser = require('body-parser'),
-    validation = require('./validation');
+const fs        = require('fs'),
+    IoC         = require('electrolyte'),
+    bodyParser  = require('body-parser'),
+    v           = require('./validation'),
+    auth        = require('./authorization');
 
-let jsonDoc = fs.readFileSync('./routes.json'),
-    documentJson = JSON.parse(jsonDoc);
+let jsonDoc     = fs.readFileSync('./routes.json'),
+   documentJson = JSON.parse(jsonDoc);
 
 class JsonRouting {
     constructor(app, cors) {
-        this.app = app;
-        this.cors = cors;
+        this.app    = app;
+        this.cors   = cors;
         this.route;
         this.setMddleware();
     }
     getObj() {
         for (let route in documentJson) {
-            let r = documentJson[route],
-                required = r.validate.required,
-                params = r.validate.params;
-            this.app.param((params !== null ? params: false), validation.isNumeric);
-            this.app[r.method.toLowerCase()](route, IoC.create(r.handler)[r.handlerMethod]);
-        }
+            let r = documentJson[route];
+            this.app.use('/api/admin/*',auth.verifyToken);
+            this.app[r.method.toLowerCase()]( route, v.checkParams,v.checkBody, IoC.create(r.handler)[r.handlerMethod]);
+        }        
     }
     setMddleware() {
         this.app.use(bodyParser.urlencoded({ extended: false }));
@@ -43,18 +42,8 @@ class JsonRouting {
                 next();
         });
     }
-    isNumeric( required,data, req, res, next ){
-        if(required && (params != null)){
-            let p = req.params[data];
-            if (Number.isFinite(p) && Number.isInteger(p) && !Number.isNaN(p)) {
-                return next();
-            }
-            res.status(500).send({ success: false, msg: "Invalid parameter" });
-        }
-        return;
+    start() {
+        this.getObj();
     }
-start(){
-    this.getObj();
-}
 }
 exports.JsonRouting = JsonRouting;
