@@ -5,25 +5,23 @@ const fs        = require('fs'),
     
     
 let v           = require('./validation');
-let jsonDoc     = fs.readFileSync( './routes.json' ),
-   documentJson = JSON.parse( jsonDoc );
+let jsonFile     = JSON.parse(fs.readFileSync( './routes.json' ));
 
 class Routing {
     constructor( app, cors ) {
         this.app    = app;
         this.cors   = cors;
-        this.route;
         this.setMddleware();
     }
-    getObj( ) {
-        for ( let route in documentJson ) {
-            let r = documentJson[route];
-            console.log(route)      
+    loadJson( ) {
+        for ( let route in jsonFile ) {
+            let r = jsonFile[route];
+
             this.app.use( '/api/admin/*', auth.verifyToken );
-            this.app[r.method.toLowerCase()]( route,
-                (req,res,next)=>{ v.checkParams( r.validate,req,res,next )},
-                // v.checkBody,
-                IoC.create(r.handler)[r.handlerMethod]);
+            this.app[r.method]( route,
+                ( req, res, next ) => { v.checkParams( r.validate, req, res, next )},
+                ( req, res, next ) => { v.checkBody( r.validate, req, res, next )},
+                IoC.create( r.handler )[r.handlerMethod]);
         }        
         
     }
@@ -50,7 +48,7 @@ class Routing {
         });
     }
     start( ) {
-        this.getObj( );
+        this.loadJson( );
     }
 }
 exports.Routing = Routing;
