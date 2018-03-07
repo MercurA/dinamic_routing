@@ -12,6 +12,6 @@ exports.verifyToken = ( req, res, next ) => {
             }
         });
     } else {
-       res.status(401).send({success: false, msg: 'Something went wrong'});
+       res.status(401).send({ success: false, msg: 'Something went wrong' });
     }
 }

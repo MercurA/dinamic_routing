@@ -1,13 +1,14 @@
 const fs        = require('fs'),
     IoC         = require('electrolyte'),
     bodyParser  = require('body-parser'),
-    v           = require('./validation'),
     auth        = require('./authorization');
-
+    
+    
+let v           = require('./validation');
 let jsonDoc     = fs.readFileSync( './routes.json' ),
    documentJson = JSON.parse( jsonDoc );
 
-class JsonRouting {
+class Routing {
     constructor( app, cors ) {
         this.app    = app;
         this.cors   = cors;
@@ -17,10 +18,16 @@ class JsonRouting {
     getObj( ) {
         for ( let route in documentJson ) {
             let r = documentJson[route];
+            console.log(route)      
             this.app.use( '/api/admin/*', auth.verifyToken );
-            this.app[r.method.toLowerCase()]( route, v.checkParams,v.checkBody, IoC.create(r.handler)[r.handlerMethod]);
+            this.app[r.method.toLowerCase()]( route,
+                (req,res,next)=>{ v.checkParams( r.validate,req,res,next )},
+                // v.checkBody,
+                IoC.create(r.handler)[r.handlerMethod]);
         }        
+        
     }
+    
     setMddleware( ) {
         this.app.use( bodyParser.urlencoded({ extended: false }));
         this.app.use( bodyParser.json( ) );
@@ -46,4 +53,4 @@ class JsonRouting {
         this.getObj( );
     }
 }
-exports.JsonRouting = JsonRouting;
+exports.Routing = Routing;

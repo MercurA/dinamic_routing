@@ -1,53 +1,58 @@
-exports.checkParams = ( req, res, next ) => {
-    function getParam(){
-        for(let i of Object.keys(req.params)){
-            return i;
-        }
-    }
-    let p = getParam();
-    if(req.params[p] !== undefined ){
-        if(isNumber(req.params[p] * 1)){
-            next();
-        } else {
-            res.send({ success: false, msg: 'Invalid parameters found.' });
-        }
-    } else {
-        next();
-    }
-}
-exports.checkBody = ( req, res, next ) => {
-    let body = req.body;
+const errors = require('./errors');
 
-    if( Object.keys(body).length !== 0 ){
-        if(isString(body.name) && isNumber(body.age) && isString(body.location) && isValidEmail(body.email)){
-            next();
-        } else {
-            res.send({success: false, msg: 'Invalid parameters found.'});
+let validationFn = {
+    isString: ( string ) => {
+        validRegExp = /^[a-zA-Z][^\\/&%*#@^()+=-_!]*$/;
+
+        if (string.match(validRegExp)) {
+            return true;
         }
-    } else {
-        next();
-    }
+        return false;
+    },
+    isValidEmail: ( string ) => {
+        validRegExp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
+
+        if ( string.match( validRegExp ) ) {
+            return true;
+        }
+        return false;
+    },
+    isNumber: ( number ) => !isNaN( parseFloat( number )) && isFinite( number )
+};
+
+exports.checkParams = ( validate, req, res, next ) => {
+    console.log(validate)
+    validate.forEach(element => {
+
+        if ( element.type !== 'body' ) {
+            if ( !req.params[element.param] ) {
+                 errors.onError('Missing params.');
+            }
+            element.validation.forEach( valFn => {
+                if( element.basicType === "string"){
+                    if ( !validationFn[valFn]( req.params[element.param] ) ) {
+                        errors.onError('incorect params');
+                    }
+                } else if(element.basicType === "number"){
+                    if ( !validationFn[valFn]( req.params[element.param] ) ) {
+                        errors.onError('incorect params');
+                    }
+                }
+            });
+        }
+    });
+    next();
 }
-function isString( string ) {
-    validRegExp = /^[a-zA-Z][^\\/&%*#@^()+=-_!]*$/
-    
-    if (string.match(validRegExp)) {
-        return true;
-    }
-    return false;
-}
-function isValidEmail( string ) {
-    validRegExp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
-    
-    if ( string.match( validRegExp ) ) {
-        return true;
-    }
-    return false;
-}
-function isNumber( number ) {
-    let n = parseFloat( number )
-    if ( Number.isFinite( n ) && Number.isInteger( n ) && !Number.isNaN( n ) ) {
-        return true;
-    }
-    return false;
-}
+
+// exports.checkBody = (validate,req, res, next) => {
+//         validate.forEach( el => {
+//             if( el.type !== 'param' ){
+//                 if( !Object.keys(req.body) === 0 ){
+//                     error.onError('No body found.')
+//                 }
+//                 el.validation.forEach( valFn => {
+//                     if(!validationFn[valFn](req.body))
+//                 } )
+//             }
+//         })
+// }
