@@ -1,24 +1,33 @@
 {   
     "/api" : {
-    	"method": "GET",
+    	"method": "get",
         "handler": "handler/handler",
-        "handlerMethod": "list",
-        "validate": [{
-            "param": "",
-            "validation":[]
-        }]
+        "handlerMethod": "list"
     },
      "/api/admin/post" : {
-    	"method": "POST",
+    	"method": "post",
         "handler": "handler/handler",
         "handlerMethod": "insert",
         "validate":[{
             "type": "body",
-            "validation":["isNumber","isString","isValidEmail"]
+            "param":"name",
+            "validation":["isString"]
+        },{
+            "type": "body",
+            "param":"age",
+            "validation":["isNumber"]
+        },{
+            "type": "body",
+            "param":"location",
+            "validation":["isString"]
+        },{
+            "type": "body",
+            "param":"email",
+            "validation":["isValidEmail"]
         }]
     },
     "/api/:id/:name":{
-        "method":"GET",
+        "method":"get",
         "handler":"handler/handler",
         "handlerMethod": "findOne",
         "validate": [{
@@ -32,7 +41,7 @@
         }]
     },
     "/api/:id":{
-        "method":"GET",
+        "method":"get",
         "handler":"handler/handler",
         "handlerMethod": "findById",
         "validate": [{
@@ -42,7 +51,7 @@
         }]
     },
     "/api/:id/:email":{
-        "method":"GET",
+        "method":"get",
         "handler":"handler/handler",
         "handlerMethod": "findByEmail",
         "validate": [{
@@ -56,7 +65,7 @@
         }]
     },
     "/api/admin/edit/:id":{
-        "method": "PUT",
+        "method": "put",
         "handler": "handler/handler",
         "handlerMethod": "editEntry",
         "validate": [{
