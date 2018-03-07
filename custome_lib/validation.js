@@ -2,7 +2,9 @@ const errors = require('./errors'),
     validator = require('validator');
 
 let validationFn = {
-    isEmpty: ( obj )=> Object.keys(obj).length === 0,
+    isEmpty: (obj) => Object.keys(obj).length === 0,
+    isValidEmail: validator.isEmail,
+    isNumber: validator.isNumeric,
     isString: (string) => {
         validRegExp = /^[a-zA-Z][^0-9\\/&%*#@^()+=-_!]*$/;
 
@@ -11,27 +13,19 @@ let validationFn = {
         }
         return false;
     },
-    isValidEmail: ( string ) => {
-        validRegExp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
-
-        if ( string.match( validRegExp )) {
-            return true;
-        }
-        return false;
-    },
-    isNumber: (number) => !isNaN(parseFloat(number)) && isFinite(number),
 };
 
-exports.checkParams = (validate, req, res, next) => {
-    if (validate instanceof Array) {
-        validate.forEach(element => {
-            if (element.type !== 'body') {
-                if (!req.params[element.param]) {
-                    errors.onError('Missing params.');
+exports.checkParams = ( validate, req, res, next ) => {
+    if ( validate instanceof Array ) {
+        validate.forEach( el => {
+            if ( el.type !== 'body' ) {
+                if ( !req.params[el.param] ) {
+                    errors.onError( 'Missing params.' );
                 }
-                element.validation.forEach(valFn => {
-                    if (!validationFn[valFn](req.params[element.param])) {
-                       res.send(errors.onError('Incorect params'));
+                el.validation.forEach( valFn => {
+                    if ( !validationFn[valFn]( req.params[el.param] )) {
+                        console.log("1")
+                        res.send(errors.onError( 'Incorect params' ));
                     }
                 });
             }
@@ -41,25 +35,24 @@ exports.checkParams = (validate, req, res, next) => {
         next();
     }
 }
-
 exports.checkBody = ( validate, req, res, next ) => {
-    if( validate instanceof Array ){
+    if ( validate instanceof Array ) {
         validate.forEach( el => {
-            if ( el.type !== 'param' ) {
-                if ( !Object.keys( req.body ) === 0 ) {
+            if (el.type !== 'param') {
+                if ( !Object.keys(req.body) === 0 ) {
                     error.onError( 'No body found.' );
                 }
                 el.validation.forEach( valFn => {
                     if ( !validationFn.isEmpty( req.body ) ) {
-                        if ( !validationFn[valFn]( req.body[el.param] ) ) {
-                            errors.onError( 'Incorect params');
+                        if ( !validationFn[valFn]( req.body[el.param] )) {
+                            res.send(errors.onError( 'Incorect params' ));
                         }
                     }
                 });
             }
         });
         next();
-    }else{
+    } else {
         next();
     }
 }
