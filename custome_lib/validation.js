@@ -1,19 +1,58 @@
-// const v = require('./lib/validator');
+const errors = require('./errors');
 
-exports.isNumeric = function(req, res, next){
-        let p = req.params[0];
+let validationFn = {
+    isString: ( string ) => {
+        validRegExp = /^[a-zA-Z][^\\/&%*#@^()+=-_!]*$/;
 
-        if (Number.isFinite(p) && Number.isInteger(p) && !Number.isNaN(p)) {
-            next();
+        if (string.match(validRegExp)) {
+            return true;
         }
-        res.status(500).send({ success: false, msg: "Invalid parameter" });
-}
-// exports.Valid = function(req,res,next){
-//     let body = req.body;
-//     for(let i in body ){
-//         if(typeof body[i] === 'string' ){
+        return false;
+    },
+    isValidEmail: ( string ) => {
+        validRegExp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
 
-//         }
-//     }
-    
+        if ( string.match( validRegExp ) ) {
+            return true;
+        }
+        return false;
+    },
+    isNumber: ( number ) => !isNaN( parseFloat( number )) && isFinite( number )
+};
+
+exports.checkParams = ( validate, req, res, next ) => {
+    console.log(validate)
+    validate.forEach(element => {
+
+        if ( element.type !== 'body' ) {
+            if ( !req.params[element.param] ) {
+                 errors.onError('Missing params.');
+            }
+            element.validation.forEach( valFn => {
+                if( element.basicType === "string"){
+                    if ( !validationFn[valFn]( req.params[element.param] ) ) {
+                        errors.onError('incorect params');
+                    }
+                } else if(element.basicType === "number"){
+                    if ( !validationFn[valFn]( req.params[element.param] ) ) {
+                        errors.onError('incorect params');
+                    }
+                }
+            });
+        }
+    });
+    next();
+}
+
+// exports.checkBody = (validate,req, res, next) => {
+//         validate.forEach( el => {
+//             if( el.type !== 'param' ){
+//                 if( !Object.keys(req.body) === 0 ){
+//                     error.onError('No body found.')
+//                 }
+//                 el.validation.forEach( valFn => {
+//                     if(!validationFn[valFn](req.body))
+//                 } )
+//             }
+//         })
 // }
