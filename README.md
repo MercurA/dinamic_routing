@@ -11,18 +11,18 @@ Inside your main file.js
 ```
 const express 	= require('express');
  
- exports = module.exports = (routing) => {
+ exports = module.exports = (routing, auth) => {
  	let app = express(),
         PORT = process.env.PORT || 3000;
 		
-	new routing.JsonRouting(app,false).start();
+	new routing.JsonRouting(app, auth, false).start();
 	
 	...
  }
  
 exports['@singleton'] = true;
 exports['@async] = false;
-exports['@require'] = ['lib_folder/jsonRouting'];
+exports['@require'] = ['lib_folder/jsonRouting', 'lib/authorization'];
 ```
 
 ### Work in Progress...
