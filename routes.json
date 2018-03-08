@@ -4,6 +4,11 @@
         "handler": "handler/handler",
         "handlerMethod": "list"
     },
+    "/login":{
+        "method": "post",
+        "handler": "lib/authorization",
+        "handlerMethod": "login"
+    },
      "/api/admin/post" : {
     	"method": "post",
         "handler": "handler/handler",
@@ -50,27 +55,30 @@
             "validation": ["isNumber"]
         }]
     },
-    "/api/:id/:email":{
-        "method":"get",
-        "handler":"handler/handler",
-        "handlerMethod": "findByEmail",
-        "validate": [{
-            "type":"param",
-            "param" : "id",
-            "validation": ["isNumber"]
-        },{
-            "type":"param",
-            "param":"email",
-            "validation":["isValidEmail"]
-        }]
-    },
     "/api/admin/edit/:id":{
         "method": "put",
         "handler": "handler/handler",
         "handlerMethod": "editEntry",
         "validate": [{
-            "param": "id",
+            "type": "param",
+            "param":"id",
             "validation" :["isNumber"]
+        },{
+            "type": "body",
+            "param":"name",
+            "validation":["isString"]
+        },{
+            "type": "body",
+            "param":"age",
+            "validation":["isNumber"]
+        },{
+            "type": "body",
+            "param":"location",
+            "validation":["isString"]
+        },{
+            "type": "body",
+            "param":"email",
+            "validation":["isValidEmail"]
         }]
     }
 }
