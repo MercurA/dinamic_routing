@@ -1,0 +1,76 @@
+{   
+    "/api" : {
+    	"method": "get",
+        "handler": "handler/handler",
+        "handlerMethod": "list"
+    },
+     "/api/admin/post" : {
+    	"method": "post",
+        "handler": "handler/handler",
+        "handlerMethod": "insert",
+        "validate":[{
+            "type": "body",
+            "param":"name",
+            "validation":["isString"]
+        },{
+            "type": "body",
+            "param":"age",
+            "validation":["isNumber"]
+        },{
+            "type": "body",
+            "param":"location",
+            "validation":["isString"]
+        },{
+            "type": "body",
+            "param":"email",
+            "validation":["isValidEmail"]
+        }]
+    },
+    "/api/:id/:name":{
+        "method":"get",
+        "handler":"handler/handler",
+        "handlerMethod": "findOne",
+        "validate": [{
+            "type": "param",
+            "param": "id",
+            "validation": ["isNumber"]
+        }, {
+            "type":"param",
+            "param": "name",
+            "validation": ["isString"]
+        }]
+    },
+    "/api/:id":{
+        "method":"get",
+        "handler":"handler/handler",
+        "handlerMethod": "findById",
+        "validate": [{
+            "type":"param",
+            "param" : "id",
+            "validation": ["isNumber"]
+        }]
+    },
+    "/api/:id/:email":{
+        "method":"get",
+        "handler":"handler/handler",
+        "handlerMethod": "findByEmail",
+        "validate": [{
+            "type":"param",
+            "param" : "id",
+            "validation": ["isNumber"]
+        },{
+            "type":"param",
+            "param":"email",
+            "validation":["isValidEmail"]
+        }]
+    },
+    "/api/admin/edit/:id":{
+        "method": "put",
+        "handler": "handler/handler",
+        "handlerMethod": "editEntry",
+        "validate": [{
+            "param": "id",
+            "validation" :["isNumber"]
+        }]
+    }
+}
