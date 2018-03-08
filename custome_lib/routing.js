@@ -14,7 +14,6 @@ class Routing {
         this.setMddleware();
     }
     loadJson() {
-        let arr = [];
         for (let route in jsonFile) {
             let r = jsonFile[route];
 
