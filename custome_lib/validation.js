@@ -26,7 +26,7 @@ exports.checkParams = ( validate, req, res, next ) => {
                 el.validation.forEach( valFn => {
                     console.log(req.params[el.param])
                     if ( !validationFn[valFn]( req.params[el.param] )) {
-                        errors.onError( 'Incorect params' );
+                         errors.onError( 'Incorect params');
                     }
                 });
             }
