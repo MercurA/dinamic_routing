@@ -1,10 +1,11 @@
-const errors = require('./errors'),
-    validator = require('validator');
-
+const errors    = require('./errors'),
+    validator   = require('validator');
+    
 let validationFn = {
     isEmpty: (obj) => Object.keys(obj).length === 0,
     isValidEmail: validator.isEmail,
     isNumber: validator.isNumeric,
+    // isPassword: validate.isPassword,
     isString: (string) => {
         validRegExp = /^[a-zA-Z][^0-9\\/&%*#@^()+=-_!]*$/;
 
@@ -23,9 +24,9 @@ exports.checkParams = ( validate, req, res, next ) => {
                     errors.onError( 'Missing params.' );
                 }
                 el.validation.forEach( valFn => {
+                    console.log(req.params[el.param])
                     if ( !validationFn[valFn]( req.params[el.param] )) {
-                        console.log("1")
-                        res.send(errors.onError( 'Incorect params' ));
+                        errors.onError( 'Incorect params' );
                     }
                 });
             }
@@ -45,7 +46,7 @@ exports.checkBody = ( validate, req, res, next ) => {
                 el.validation.forEach( valFn => {
                     if ( !validationFn.isEmpty( req.body ) ) {
                         if ( !validationFn[valFn]( req.body[el.param] )) {
-                            res.send(errors.onError( 'Incorect params' ));
+                            errors.onError( 'Incorect params' );
                         }
                     }
                 });

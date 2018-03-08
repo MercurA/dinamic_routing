@@ -1,31 +1,30 @@
 const fs        = require('fs'),
     IoC         = require('electrolyte'),
-    bodyParser  = require('body-parser'),
-    auth        = require('./authorization');
+    bodyParser  = require('body-parser');
     
     
 let v           = require('./validation');
-let jsonFile     = JSON.parse(fs.readFileSync( './routes.json' ));
+let jsonFile    = JSON.parse(fs.readFileSync( './routes.json' ));
 
 class Routing {
-    constructor( app, cors ) {
+    constructor( app, auth, cors ) {
         this.app    = app;
         this.cors   = cors;
+        this.auth   = auth;
         this.setMddleware();
     }
     loadJson( ) {
         for ( let route in jsonFile ) {
             let r = jsonFile[route];
 
-            this.app.use( '/api/admin/*', auth.verifyToken );
+            this.app.use( '/api/admin/*',this.auth.verifyToken );
             this.app[r.method]( route,
                 ( req, res, next ) => { v.checkParams( r.validate, req, res, next )},
                 ( req, res, next ) => { v.checkBody( r.validate, req, res, next )},
                 IoC.create( r.handler )[r.handlerMethod]);
         }        
-        
     }
-    
+   
     setMddleware( ) {
         this.app.use( bodyParser.urlencoded({ extended: false }));
         this.app.use( bodyParser.json( ) );
