@@ -4,10 +4,15 @@
         "handler": "handler/handler",
         "handlerMethod": "list"
     },
-    "/login":{
+    "/api/login":{
         "method": "post",
         "handler": "lib/authorization",
-        "handlerMethod": "login"
+        "handlerMethod": "login",
+        "validate":[{
+            "type": "body",
+            "param": "password",
+            "validation": ["isString"]
+        }]
     },
      "/api/admin/post" : {
     	"method": "post",
